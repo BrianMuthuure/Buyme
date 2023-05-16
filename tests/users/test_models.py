@@ -31,13 +31,13 @@ def test_super_user_email_is_normalized(super_user):
 
 def test_super_user_not_staff(user_factory):
     with pytest.raises(ValueError) as error:
-        user_factory.create(admin=True, staff=False)
+        user_factory.create(is_superuser=True, is_staff=False)
     assert str(error.value) == "Superuser must have staff=True."
 
 
 def test_super_user_not_admin(user_factory):
     with pytest.raises(ValueError) as error:
-        user_factory.create(admin=False, staff=True)
+        user_factory.create(is_superuser=False, is_staff=True)
     assert str(error.value) == "Superuser must have admin=True."
 
 
@@ -61,5 +61,5 @@ def test_create_user_no_email(user_factory):
 
 def create_super_user_no_password(user_factory):
     with pytest.raises(ValueError) as error:
-        user_factory.create(admin=True, staff=True, password=None)
+        user_factory.create(is_superuser=True, is_staff=True, password=None)
     assert str(error.value) == "Superuser must have a password."

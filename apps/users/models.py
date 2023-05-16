@@ -17,8 +17,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True, verbose_name=_("Updated At"))
     birth_date = models.DateField(blank=True, null=True, verbose_name=_("Date of Birth"))
     is_active = models.BooleanField(default=True, verbose_name=_("Is Active"))
-    staff = models.BooleanField(default=False, verbose_name=_("Is Staff"))
-    admin = models.BooleanField(default=False, verbose_name=_("Is Admin"))
+    is_staff = models.BooleanField(default=False, verbose_name=_("Is Staff"))
+    is_superuser = models.BooleanField(default=False, verbose_name=_("Is Admin"))
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["first_name", "last_name"]
@@ -67,9 +67,5 @@ class User(AbstractBaseUser, PermissionsMixin):
         return age
 
     @property
-    def is_staff(self):
-        return self.staff
-
-    @property
     def is_admin(self):
-        return self.admin
+        return self.is_superuser

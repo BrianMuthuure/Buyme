@@ -17,16 +17,16 @@ class UserAdmin(BaseUserAdmin):
         "birth_date",
         "age",
         "is_active",
-        "admin",
-        "staff",
+        "is_superuser",
+        "is_staff",
     ]
 
-    list_filter = ["admin", "staff", "is_active"]
+    list_filter = ["is_superuser", "is_staff", "is_active"]
 
     fieldsets = (
         ("Login Credentials", {"fields": ("email", "password")}),
         ("Personal Info", {"fields": ("first_name", "middle_name", "last_name", "birth_date")}),
-        ("Permissions", {"fields": ("admin", "staff", "is_active")}),
+        ("Permissions", {"fields": ("is_superuser", "is_staff", "is_active")}),
         ("Important dates", {"fields": ("date_joined", "last_login",)}),
     )
 

@@ -14,5 +14,5 @@ def user(db, user_factory):
 
 @pytest.fixture
 def super_user(db, user_factory):
-    user = user_factory.create(staff=True, is_superuser=True)
+    user = user_factory.create(is_active=True, is_taff=True, is_superuser=True)
     return user

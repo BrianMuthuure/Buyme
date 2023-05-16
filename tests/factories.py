@@ -13,7 +13,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     email = factory.LazyAttribute(lambda x: faker.email())
     password = factory.LazyAttribute(lambda x: faker.password())
     is_active = True
-    staff = False
+    is_staff = False
 
     class Meta:
         model = AUTH_USER_MODEL
@@ -22,7 +22,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     def _create(cls, model_class, *args, **kwargs):
         """Override the default ``_create`` with our custom call."""
         manager = cls._get_manager(model_class)
-        if "admin" in kwargs:
+        if "is_superuser" in kwargs:
             return manager.create_superuser(*args, **kwargs)
         else:
             return manager.create_user(*args, **kwargs)
