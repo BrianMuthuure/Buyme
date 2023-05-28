@@ -5,8 +5,15 @@
 {% endblock %}
 {% block content %}
   <div class="product-detail">
-    <img src="{% if product.image %}{{ product.image.url }}{% else %}
-    {% static 'img/no_image.png' %}{% endif %}">
+      {% for image in product.productimage_set.all %}
+         {% if image %}
+            {% if image.is_primary %}
+              <img src="{{ image.image.url }}" height="" width="">
+            {% endif %}
+          {% else %}
+          <img src="{% static 'img/no_image.png' %}">
+          {% endif %}
+          {% endfor %}
     <h1>{{ product.name }}</h1>
     <h2>
       <a href="{{ product.category.get_absolute_url }}">

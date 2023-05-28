@@ -18,4 +18,7 @@ def product_list(request, category_slug=None):
 
 def product_detail(request, id, slug):
     product = ProductService.get_product_by_id_and_slug(id, slug)
-    return render(request, 'products/details.html', {'product': product})
+    context = {
+        "product": product,
+    }
+    return render(request, 'products/details.html', context)

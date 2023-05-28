@@ -1,7 +1,7 @@
 from django.contrib import admin
-from django.urls import reverse
 from django.utils.html import format_html
 
+from .common import S3Handler
 from .models import Product, Category, ProductImage, Variant
 
 
@@ -47,7 +47,8 @@ class ProductAdmin(admin.ModelAdmin):
     def primary_image_url(self, obj):
         primary_image = obj.productimage_set.filter(is_primary=True).first()
         if primary_image:
-            return format_html('<a href="{}" target="_blank">Primary image url</a>', primary_image.image.url)
+            safe_url = S3Handler.create_presigned_url(primary_image.image.name)
+            return format_html(f'<a href="{safe_url}" target="_blank">{primary_image.image.name}</a>')
         return None
 
     primary_image_url.short_description = 'Primary Image URL'
