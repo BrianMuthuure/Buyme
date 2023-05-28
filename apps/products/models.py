@@ -1,7 +1,11 @@
+from PIL import Image
 from django.db import models
+from django.urls import reverse
 from django.utils.safestring import mark_safe
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+
+from apps.products.common import user_directory_path
 
 
 # Create your models here.
@@ -33,52 +37,27 @@ class Category(TimeStampedModel):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('products:product_list_by_category', args=[self.slug])
+
 
 class Product(TimeStampedModel):
-    name = models.CharField(
-        max_length=255, blank=True,
-        null=True, verbose_name=_("Name"))
-    description = models.TextField(
-        blank=True, null=True,
-        verbose_name=_("Description"))
+    name = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Name"))
+    description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE,
-        blank=True, null=True,
-        verbose_name=_("Category"))
-    slug = models.SlugField(
-        max_length=255, blank=True,
-        null=True, verbose_name=_("Slug"))
-    available = models.BooleanField(
-        default=True,
-        verbose_name=_("Available"))
+        Category, on_delete=models.CASCADE, blank=True, null=True, verbose_name=_("Category"))
+    slug = models.SlugField(max_length=255, blank=True, null=True, verbose_name=_("Slug"))
+    available = models.BooleanField(default=True, verbose_name=_("Available"))
     price = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        blank=True, null=True,
-        verbose_name=_("Price"))
+        max_digits=10, decimal_places=2, blank=True, null=True, verbose_name=_("Price"))
     discount_price = models.DecimalField(
-        max_digits=10, decimal_places=2,
-        blank=True, null=True,
-        verbose_name=_("Discount Price"))
-    is_featured = models.BooleanField(
-        default=False,
-        verbose_name=_("Is Featured"))
-    is_bestseller = models.BooleanField(
-        default=False,
-        verbose_name=_("Is Bestseller"))
-    is_new = models.BooleanField(
-        default=False,
-        verbose_name=_("Is New"))
-    is_active = models.BooleanField(
-        default=True,
-        verbose_name=_("Is Active"))
-    is_deleted = models.BooleanField(
-        default=False,
-        verbose_name=_("Is Deleted"))
-    brand = models.CharField(
-        max_length=255,
-        blank=True,
-        null=True,
-        verbose_name=_("Brand"))
+        max_digits=10, decimal_places=2, blank=True, null=True, verbose_name=_("Discount Price"))
+    is_featured = models.BooleanField(default=False, verbose_name=_("Is Featured"))
+    is_bestseller = models.BooleanField(default=False, verbose_name=_("Is Bestseller"))
+    is_new = models.BooleanField(default=False, verbose_name=_("Is New"))
+    is_active = models.BooleanField(default=True, verbose_name=_("Is Active"))
+    is_deleted = models.BooleanField(default=False, verbose_name=_("Is Deleted"))
+    brand = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Brand"))
 
     class Meta:
         verbose_name = _("Product")
@@ -97,18 +76,15 @@ class Product(TimeStampedModel):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('products:product_detail', args=[self.id, self.slug])
+
 
 class ProductImage(TimeStampedModel):
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE,
-        blank=True, null=True,
-        verbose_name=_("Product"))
-    image = models.ImageField(
-        upload_to="products",
-        verbose_name=_("Image"))
-    is_primary = models.BooleanField(
-        default=False,
-        verbose_name=_("Is Primary"))
+        Product, on_delete=models.CASCADE, blank=True, null=True, verbose_name=_("Product"))
+    image = models.ImageField(upload_to=user_directory_path, verbose_name=_("Image"))
+    is_primary = models.BooleanField(default=False, verbose_name=_("Is Primary"))
 
     class Meta:
         verbose_name = _("Product Image")
@@ -117,6 +93,14 @@ class ProductImage(TimeStampedModel):
 
     def __str__(self):
         return self.product.name
+
+    # def save(self, *args, **kwargs):
+    #     img = Image.open(self.image.path)
+    #     if img.height > 300 or img.width > 300:
+    #         new_img = (300, 300)
+    #         img.thumbnail(new_img)
+    #         img.save(self.image.path)
+    #     super(ProductImage, self).save(*args, **kwargs)
 
     def image_tag(self):
         if self.image.url is not None:
