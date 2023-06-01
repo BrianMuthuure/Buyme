@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}
-  {{ product.name }}
-{% endblock %}
+{% block title %} {{ product.name }} {% endblock %}
 {% block content %}
   <div class="product-detail">
       {% for image in product.productimage_set.all %}

@@ -18,4 +18,6 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = CartService.get_cart(request)
+    # allow the user to update the quantity of a product in the cart
+    CartService.update_cart(cart)
     return render(request, 'cart/detail.html', {'cart': cart})

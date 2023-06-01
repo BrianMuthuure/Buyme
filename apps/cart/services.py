@@ -31,3 +31,13 @@ class CartService:
         Get the cart from the session.
         """
         return Cart(request)
+
+    @staticmethod
+    def update_cart(cart):
+        """
+        Update the quantity of a product in the cart.
+        current quantity of the product is replaced with the given quantity: override=True.
+        """
+        for item in cart:
+            item['update_quantity_form'] = CartAddProductForm(
+                initial={'quantity': item['quantity'], 'override': True})
