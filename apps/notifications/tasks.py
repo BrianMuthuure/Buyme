@@ -1,5 +1,6 @@
 from celery import shared_task
 
+from apps.notifications.models import EmailMessage
 from apps.orders.models import Order
 from decouple import config
 from django.core.mail import send_mail
@@ -17,6 +18,9 @@ class EmailHandler:
                 recipient_list=[email],
                 fail_silently=False,
             )
+
+            # save email message to the database
+            EmailHandler.add_email_to_db(email, subject, body)
             return True
         except Exception as e:
             print(e)
@@ -35,3 +39,12 @@ class EmailHandler:
         except Exception as e:
             print(e)
             raise Exception("Error sending email: {}".format(e))
+
+    @staticmethod
+    def add_email_to_db(email, subject, body):
+        try:
+            EmailMessage.objects.create(email=email, subject=subject, body=body)
+            return True
+        except Exception as e:
+            print(e)
+            raise Exception("Error saving email to database: {}".format(e))
