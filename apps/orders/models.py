@@ -1,8 +1,10 @@
 from django.db import models
 from ..products.models import Product
+from .utils import generate_order_id
 
 
 class Order(models.Model):
+    order_id = models.CharField(max_length=50, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -20,7 +22,12 @@ class Order(models.Model):
         ]
 
     def __str__(self):
-        return f'Order {self.id}'
+        return f'Order {self.order_id}'
+
+    def save(self, *args, **kwargs):
+        if not self.order_id:
+            self.order_id = f"Order-{generate_order_id()}"
+        return super().save(*args, **kwargs)
 
     def get_total_cost(self):
         return sum(item.get_total_price() for item in self.items.all())
