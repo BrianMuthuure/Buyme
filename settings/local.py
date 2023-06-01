@@ -37,6 +37,7 @@ LOCAL_APPS = [
     "apps.users.apps.UsersConfig",
     "apps.products.apps.ProductsConfig",
     "apps.cart.apps.CartConfig",
+    "apps.orders.apps.OrdersConfig",
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + LOCAL_APPS
