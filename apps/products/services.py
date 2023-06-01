@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 
-from apps.products.models import Category, Product
+from .models import Category, Product
 
 
 class ProductService:
@@ -9,14 +9,12 @@ class ProductService:
         return Category.objects.all()
 
     @staticmethod
-    def get_all_products():
-        return Product.objects.prefetch_related('productimage_set').filter(available=True)
+    def get_product_by_id(product_id):
+        return Product.objects.get(id=product_id)
 
     @staticmethod
-    def get_products_by_category(category_slug):
-        category = Category.objects.get(slug=category_slug)
-        products = Product.objects.prefetch_related('productimage_set').filter(category=category, available=True)
-        return category, products
+    def get_all_products():
+        return Product.objects.prefetch_related('productimage_set').filter(available=True)
 
     @staticmethod
     def get_product_by_id_and_slug(id, slug):

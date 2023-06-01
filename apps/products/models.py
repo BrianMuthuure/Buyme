@@ -20,9 +20,12 @@ class TimeStampedModel(models.Model):
 
 
 class Category(TimeStampedModel):
-    name = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Name"))
-    description = models.TextField(blank=True, null=True, verbose_name=_("Description"))
-    slug = models.SlugField(max_length=255, blank=True, null=True, verbose_name=_("Slug"))
+    name = models.CharField(
+        max_length=255, blank=True, null=True, verbose_name=_("Name"))
+    description = models.TextField(
+        blank=True, null=True, verbose_name=_("Description"))
+    slug = models.SlugField(
+        max_length=255, blank=True, null=True, verbose_name=_("Slug"))
 
     class Meta:
         verbose_name = _("Category")
