@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views.decorators.http import require_POST
-
-from apps.cart.services import CartService
+from ..cart.services import CartService
+from ..coupons.forms import CouponApplyForm
 
 
 @require_POST
@@ -18,6 +18,12 @@ def cart_remove(request, product_id):
 
 def cart_detail(request):
     cart = CartService.get_cart(request)
+
     # allow the user to update the quantity of a product in the cart
     CartService.update_cart(cart)
-    return render(request, 'cart/detail.html', {'cart': cart})
+    coupon_apply_form = CouponApplyForm()
+    return render(
+        request,
+        'cart/detail.html',
+        {'cart': cart, 'coupon_apply_form': coupon_apply_form}
+    )

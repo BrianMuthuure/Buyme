@@ -2,6 +2,7 @@ from .forms import OrderCreateForm
 from .models import OrderItem, Order
 from ..notifications.tasks import EmailHandler
 from ..payment.service import StripePaymentService
+from ..payment.tasks import StripePaymentHandler
 
 
 class OrderService:
@@ -10,7 +11,11 @@ class OrderService:
     def create_order(request, cart):
         form = OrderCreateForm(request.POST)
         if form.is_valid():
-            order = form.save()
+            order = form.save(commit=False)
+            if cart.coupon:
+                order.coupon = cart.coupon
+                order.discount = cart.coupon.discount
+            order.save()
             for item in cart:
                 OrderService.create_order_item(order, item)
             cart.clear()
@@ -38,5 +43,5 @@ class OrderService:
         order.save()
         StripePaymentService.create_payment_object(order)
         # launch asynchronous task
-
+        StripePaymentHandler.send_payment_success_email.delay(order.id)
         return order
