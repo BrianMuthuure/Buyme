@@ -4,6 +4,8 @@ import stripe
 from django.conf import settings
 from django.urls import reverse
 
+from apps.payment.models import Payment
+
 # create the stripe instance
 stripe.api_key = settings.STRIPE_SECRET_KEY
 stripe.api_version = settings.STRIPE_API_VERSION
@@ -39,3 +41,18 @@ class StripePaymentService:
             return session
         except Exception as e:
             raise e
+
+    @staticmethod
+    def create_payment_object(order):
+        try:
+            Payment.objects.create(
+                email=order.email,
+                amount=order.get_total_cost(),
+                stripe_charge_id=order.stripe_id,
+                order_id=order.order_id
+
+            )
+            return True
+        except Exception as e:
+            print(e)
+            return False

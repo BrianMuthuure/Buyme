@@ -1,6 +1,7 @@
 from .forms import OrderCreateForm
 from .models import OrderItem, Order
 from ..notifications.tasks import EmailHandler
+from ..payment.service import StripePaymentService
 
 
 class OrderService:
@@ -32,10 +33,10 @@ class OrderService:
     @staticmethod
     def mark_order_as_paid(order_id, stripe_id):
         order = OrderService.get_order_by_id(order_id)
-        order.paid = True
+        order.is_paid = True
         order.stripe_id = stripe_id
         order.save()
-
+        StripePaymentService.create_payment_object(order)
         # launch asynchronous task
 
         return order
